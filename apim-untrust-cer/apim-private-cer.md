@@ -50,3 +50,4 @@ IIS + 自签名 HTTPS 证书，不被客户端调用方（App Service）信任�
 最后，就可以通过 APIM 将用户的请求传递到 IIS 了。当然，通过 App Service 去调用也是 OK 的（需要注意调用地址改成 APIM 的地址了 - `https://niuai-app-dev-apim.azure-api.net/WeatherForecast`）
 
 ![api-success](./images/api-success.png)
+![api-call-success](./images/api-call-success.png)
