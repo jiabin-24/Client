@@ -19,7 +19,7 @@ IIS + 自签名 HTTPS 证书，不被客户端调用方（App Service）信任�
 配置界面
 
 - Name：填写任意名称即可
-- Runtime URL：填写 IIS 的公网地址（此处演示为 https://20.255.63.221，根据你的实际情况填写）
+- Runtime URL：填写 IIS 的公网地址（此处演示为：<https://20.255.63.221>，根据您的实际情况填写）
 
 ![backend-config](./images/apim-backend-config.png)
 
@@ -39,6 +39,8 @@ IIS + 自签名 HTTPS 证书，不被客户端调用方（App Service）信任�
 此时，进到 APIM 的 api test 能看到是因为证书的原因
 
 ![api-test](./images/apim-test.png)
+
+### 解决方案
 
 将自签名证书（.cer）导入 APIM
 > 注意：若服务器证书有根证书、中间证书，需要将其都上传到 APIM 的证书中。参考：<https://docs.azure.cn/zh-cn/api-management/api-management-howto-ca-certificates>
