@@ -22,7 +22,22 @@ git subtree add --prefix=lib https://github.com/example/lib.git main --squash
 
 ---
 
-2) 更新 subtree（拉取新版本）
+2) 查看 subtree
+
+git subtree 本身没有像 git subtree list 这种官方子命令，所以一般都是通过 git log 里的 git-subtree-dir 元数据来“列出全部 subtree”
+
+```bash
+git log --all --grep="^git-subtree-dir:" --pretty=format:"%b" | grep "^git-subtree-dir:" | sort -u
+```
+
+如果你还想同时看到对应的远程仓库和分支，可以用（在 PS 中执行）：
+```bash
+git log --all --format=%B | Select-String '^git-subtree-dir:' | ForEach-Object { $_.Line -replace '^git-subtree-dir:\s*','' } | Sort-Object -Unique | ForEach-Object { $dir = $_; $url = (git remote get-url $dir 2>$null); if (-not $url) { $url = '(no same-name remote found)' }; "${dir}`t${url}" }
+```
+
+---
+
+3) 更新 subtree（拉取新版本）
 
 ```
 git subtree pull --prefix=lib https://github.com/example/lib.git main --squash
@@ -32,7 +47,7 @@ git subtree pull --prefix=lib https://github.com/example/lib.git main --squash
 
 ---
 
-3) 推送修改回子仓库（如果你修改了 `lib`）
+4) 推送修改回子仓库（如果你修改了 `lib`）
 
 ```
 git subtree push --prefix=lib https://github.com/example/lib.git main
