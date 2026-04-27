@@ -4,7 +4,7 @@
 
 ### 0. 迁移前准备
 
-1. 使用**专用迁移管理员账号**登录（不要使用“将被迁移的账号”）。
+1. 使用**专用迁移管理员账号**登录（不要使用“将被迁移的账号”），一般可使用 `机器名\Administrator`
 2. 确认该账号具备以下权限：
 	- Azure DevOps Server：`Team Foundation Administrators`（server-level）、Admin Console Users
 	![devops-admin](./images/devops-admin.png)
@@ -62,7 +62,7 @@
 	Write-Host "CSV generated: $csvFile"
 	```
 
-4. （重要）将“需要迁移”的账号从应用层服务器本地 Administrators 组中移除，避免自动注入导致冲突。（注意：若有多个 AT，则需在每个实例上操作）
+4. （重要）将“需要迁移”的账号从应用层服务器本地 Administrators 组中移除，避免自动注入导致冲突。（注意：若有多个 AT，则需在每个实例上操作）- 已审视，客户环境无此类账号
 
 ---
 
@@ -107,7 +107,7 @@ TFSServiceControl quiesce
 	```bat
 	TFSConfig Identities /change /fromdomain:OldDomain /todomain:NewDomain /account:OldTFSServiceAccount /toaccount:NewTFSServiceAccount
 	```
-3. 对“旧域与新域**同名**账号”执行批量映射：
+3. 对“旧域与新域**同名**账号”执行批量映射（本地验证似乎有坑，可直接采用 #4）：
 	```bat
 	TFSConfig Identities /change /fromdomain:OldDomain /todomain:NewDomain
 	```
