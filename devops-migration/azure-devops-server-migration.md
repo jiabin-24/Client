@@ -6,10 +6,13 @@
 
 1. 使用**专用迁移管理员账号**登录（不要使用“将被迁移的账号”），一般可使用 `机器名\Administrator`
 2. 确认该账号具备以下权限：
-	- Azure DevOps Server：`Team Foundation Administrators`（server-level）、Admin Console Users
+	- Azure DevOps Server：`Team Foundation Administrators`（server-level）、`Admin Console Users`
 	![devops-admin](./images/devops-admin.png)
+
 	- SQL Server：`sysadmin`（server-level）
+	注：客户忘记了数据库的密码，这个得提前准备
 	![db-admin](./images/db-server-admin.png)
+
 	- 服务器本地（AT）：`Administrators`（lusrmgr.msc -> 本地用户和组/Administrators）
 	![local-admin](./images/local-admin.png)
 
@@ -84,7 +87,7 @@ TFSServiceControl quiesce
 1. 打开 Azure DevOps Server 管理控制台 -> Scheduled Backups。
 2. 立即执行一次 Full Backup（若之前未设置过备份计划，需要先进行配置）。
 3. 如果启用了 Reporting，务必包含 SQL Server Reporting Services 加密密钥。
-4. 备份完成后，确认备份文件在共享路径可访问，并可被目标环境读取。
+4. 备份完成后，确认备份文件在共享路径可访问（注意服务账号对该共享路径的可访问性），并可被目标环境读取。
 
 ![devops-backup](./images/devops-backup.png)
 
@@ -127,7 +130,7 @@ TFSServiceControl quiesce
 	```bat
 	TFSConfig Accounts /change /AccountType:Proxy /account:NewDomain\SvcProxy /password:***
 	```
-8. 对于无效账号（在老域中有但可能离职、失效的账号，在新域中不存在的账号），需要从 Security Scope 中移除（若不及时清除，即使迁移成功，也会造成性能逐渐恶化）
+8. 对于无效账号（在老域中有但可能离职、失效的账号，在新域中不存在的账号），按需从 Security Scope 中移除（若不及时清除，即使迁移成功，也会造成性能逐渐恶化）
 
 > 注意：系统账号（如 `Network Service`）不能按普通账号直接迁移，需按官方 Identities Command 说明采用分阶段处理。
 
@@ -200,7 +203,7 @@ TFSServiceControl quiesce
 1. 不要把“硬件迁移”和“域迁移”混做一次变更。
 2. 目标域若已有同名身份记录，`TFSConfig Identities` 可能失败；必须先清理冲突。
 3. 迁移窗口内必须保持源环境冻结（`quiesce` 到 `unquiesce` 期间禁止写入）。
-4. （坑）用同名情况下的命令（`TFSConfig Identities /change /fromdomain:OldDomain /todomain:NewDomain`）不管用，且执行之后无法再使用单条remap的命令。所以建议一开始就用单条remap的命令
+4. （坑）用同名情况下的命令（`TFSConfig Identities /change /fromdomain:OldDomain /todomain:NewDomain`）不管用，且执行之后无法再使用单条 remap 的命令。所以建议一开始就用单条的 remap 命令
 5. （注意点）Migration 之后，ADO Server 重启之后，work item owner 之类的地方 user 信息会暂时性出现 inactive identity 的情况。一段时间之后（可能10分钟）才会恢复正常。（猜测可能是后台在处理 sync）
 
 ## 时间窗口
